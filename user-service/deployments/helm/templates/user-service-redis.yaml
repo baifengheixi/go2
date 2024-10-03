@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.app.name }}-redis-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.app.name }}-redis
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.app.name }}-redis
+    spec:
+      containers:
+        - name: {{ .Values.app.name }}-redis
+          image: redis
+          resources:
+            limits:
+              memory: 512Mi
+              cpu: "2"
+            requests:
+              memory: 256Mi
+              cpu: "0.2"
+          env:
+            - name: REDIS_PASSWORD
+              value: {{ .Values.redis.password }}
+          command: ["/bin/sh"]
+          args: ["-c", "redis-server --requirepass '$(REDIS_PASSWORD)'"]
+          readinessProbe:
+            successThreshold: 1
+            failureThreshold: 3
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 5
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - exec redis-cli -a {{ .Values.redis.password }} --raw incr ping
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.app.name }}-{{ .Values.redis.service.name }}
+spec:
+  selector:
+    app: {{ .Values.app.name }}-redis
+  ports:
+    - name: {{ .Values.app.name }}-redis
+      protocol: TCP
+      port: {{ .Values.redis.port }}
+      targetPort: {{ .Values.redis.port }}

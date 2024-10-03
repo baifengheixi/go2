@@ -1,0 +1,9 @@
+# disable kraft controller(broker) => enable zookeeper broker
+# kraft:
+#   enabled: false
+# controller:
+#   replicaCount: 0
+# zookeeper:
+#   enabled: true
+# broker:
+#   replicaCount: 3

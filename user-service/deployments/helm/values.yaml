@@ -1,0 +1,24 @@
+app:
+  name: user-service
+  port: 8080
+
+postgres:
+  service:
+    name: postgres-srv
+  port: 5432
+  db: db
+  user: user
+  password: password
+  tz: Asia/Shanghai
+  storage:
+    classname: postgres-storage
+    pv_name: postgres-pv
+    pvc_name: postgres-pvc
+    size: 1Gi
+    path: /tmp/user-service-postgres-data
+
+redis:
+  service:
+    name: redis-srv
+  port: 6379
+  password: password

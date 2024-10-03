@@ -1,0 +1,17 @@
+yamlApplicationConfig:
+  kafka:
+    clusters:
+      - name: local
+        bootstrapServers: kafka:9092
+        properties:
+          security.protocol: SASL_PLAINTEXT
+          sasl.mechanism: SCRAM-SHA-256       
+          sasl.jaas.config: org.apache.kafka.common.security.scram.ScramLoginModule required username="user1" password="o6J5nD39lb";
+          # password="$(kubectl get secret kafka-user-passwords --namespace kafka -o jsonpath='{.data.client-passwords}' | base64 --decode ; echo)";
+          
+  auth:
+    type: disabled
+  management:
+    health:
+      ldap:
+        enabled: false
